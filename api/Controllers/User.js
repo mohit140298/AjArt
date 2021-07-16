@@ -23,12 +23,21 @@ exports.getUsers = async (req, res) => {
 
 exports.getUser = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id)
+        if (!req.user_id)
+        {
+            res.status(400).json({ "message": "user not permitted" })
+            }
+        const user = await User.findById(req.user_id).populate('role')
         //User.findOne({_id:req.params.id})
-
+        if (!user)
+        {
+            res.status(400).json({"message":"user not found"})
+        }
         res.status(200).json({
             status: 'success',
-            data: user
+            role: user.role,
+            data:user
+
         })
     }
     catch (error) {

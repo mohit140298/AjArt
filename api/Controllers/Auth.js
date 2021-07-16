@@ -1,5 +1,7 @@
 const User = require('../Models/user')
 const bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
+const Role = require('../Models/role')
 
 
 exports.login = async (req, res) => {
@@ -14,9 +16,10 @@ exports.login = async (req, res) => {
 
         if (user) {
             const isMatch = await bcrypt.compare(password, user.password)
-            const token = await user.generateAuthToken();
-            console.log(token);
+
             if (isMatch) {
+                const userTokenData = await user.generateAuthToken();
+                res.cookie("auth", userTokenData.access_token)
                 res.status(200).json({
                     status: "success",
                     data: user,
@@ -46,6 +49,7 @@ exports.login = async (req, res) => {
 }
 
 exports.register = async (req, res) => {
+  
     const { name, email, mobile, password, cpassword } = req.body;
 
     if (!name || !email || !mobile || !password || !cpassword) {
@@ -68,7 +72,11 @@ exports.register = async (req, res) => {
             })
         }
         else {
-            const user = new User(req.body)
+            let userData = req.body;
+            const customerRole = await Role.findOne({ index_id: 3 })
+            userData = { ...userData, 'role': customerRole._id }
+            console.log(userData);
+            const user = new User(userData)
             await user.save()
             res.status(201).json({
                 status: "success",
