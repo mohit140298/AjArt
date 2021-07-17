@@ -48,6 +48,7 @@ exports.login = async (req, res) => {
     }
 }
 
+
 exports.register = async (req, res) => {
   
     const { name, email, mobile, password, cpassword } = req.body;
@@ -90,4 +91,9 @@ exports.register = async (req, res) => {
     }
 
 
+}
+
+exports.logout = async (req, res) => {
+    res.clearCookie('auth', { path: '/' })
+    res.status(200).send("user logged out")
 }
