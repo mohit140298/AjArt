@@ -4,12 +4,16 @@ const cors = require("cors");
 const userRoutes = require("./api/Routes/user");
 const authRoutes = require("./api/Routes/auth");
 const productRoutes = require("./api/Routes/product");
-const  cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser')
+const fileUpload = require('express-fileupload')
+
+
 
 
 
 const app = express();
 app.use(cookieParser())
+app.use(fileUpload())
 
 //.env configuration
 dotenv.config({ path: '.env' })
@@ -25,9 +29,8 @@ app.use("/auth",authRoutes)
 app.use("/user", userRoutes)
 app.use("/product", productRoutes)
 
-app.get("/", (req,res) => {
-    return res.status(200);
-})
+
+
 
 require('./db/conn')
 const PORT = process.env.PORT || 5000

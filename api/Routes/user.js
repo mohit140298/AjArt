@@ -9,6 +9,7 @@ const router = express.Router();
 router.get("/list", userController.getUsers)
 router.get("/", authMiddleware.checkLogin, userController.getUser)
 router.patch("/:id/update", authMiddleware.checkLogin, userController.update)
-router.delete("/:id/delete", authMiddleware.checkLogin,userController.deleteUser)
+router.delete("/:id/delete", authMiddleware.checkLogin, userController.deleteUser)
+router.post("/:id/upload", authMiddleware.checkLogin, userController.uploadImage )
 
 module.exports = router;
