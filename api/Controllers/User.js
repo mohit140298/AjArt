@@ -1,4 +1,5 @@
 const User = require('../Models/user')
+const UserCartProduct = require('../Models/userCartProduct')
 
 
 exports.getUsers = async (req, res) => {
@@ -111,4 +112,29 @@ exports.uploadImage = async(req, res) => {
 
         })
     })
+}
+
+exports.getUserCartProducts = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+        if (!user) {
+            return res.status(400).send('user not found')
+        }
+        const userCartProductData = await UserCartProduct.find({ user_id: user._id }).populate('product')
+        const cartData = userCartProductData.json()
+        if (cartData) {
+            products = cartData.map((data) => {
+                return data.product;
+            })
+            res.status(200).json({
+                status: "success",
+                data:products
+
+            })
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(400).send(err);
+    }
+    
 }

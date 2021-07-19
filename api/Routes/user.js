@@ -10,6 +10,7 @@ router.get("/list", userController.getUsers)
 router.get("/", authMiddleware.checkLogin, userController.getUser)
 router.patch("/:id/update", authMiddleware.checkLogin, userController.update)
 router.delete("/:id/delete", authMiddleware.checkLogin, userController.deleteUser)
-router.post("/:id/upload", authMiddleware.checkLogin, userController.uploadImage )
+router.post("/:id/upload", authMiddleware.checkLogin, userController.uploadImage)
+router.get("/:id/cartProducts", authMiddleware.checkLogin, userController.getUserCartProducts)
 
 module.exports = router;
