@@ -15,7 +15,13 @@ const userSchema = new mongoose.Schema({
     cpassword: String,
     profileImage: {
         type:String
-    }
+    },
+    products: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product',
+        }
+    ]
    
 });
 
@@ -31,7 +37,7 @@ userSchema.pre('save', async function (next) {
 
 userSchema.methods.generateAuthToken = async function () {
     try {
-        let authToken = await jwt.sign({ _id: this._id }, process.env.SECRET_KEY, { expiresIn: 60 * 60 * 60});
+        let authToken = await jwt.sign({ _id: this._id }, process.env.SECRET_KEY, { expiresIn: "5d"});
         const userToken = await UserToken.create({
             userId: this._id,
             access_token: authToken,

@@ -1,5 +1,5 @@
 const User = require('../Models/user')
-const UserCartProduct = require('../Models/userCartProduct')
+const Product = require('../Models/product')
 
 
 exports.getUsers = async (req, res) => {
@@ -116,19 +116,15 @@ exports.uploadImage = async(req, res) => {
 
 exports.getUserCartProducts = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id)
+        const user = await User.findById(req.user_id).populate('products')
         if (!user) {
             return res.status(400).send('user not found')
         }
-        const userCartProductData = await UserCartProduct.find({ user_id: user._id }).populate('product')
-        const cartData = userCartProductData.json()
-        if (cartData) {
-            products = cartData.map((data) => {
-                return data.product;
-            })
+       
+        if (user.products.length) {
             res.status(200).json({
                 status: "success",
-                data:products
+                data: user.products
 
             })
         }
@@ -137,4 +133,69 @@ exports.getUserCartProducts = async (req, res) => {
         res.status(400).send(err);
     }
     
+}
+
+exports.addProduct = async (req, res) => {
+    try {
+        const productId = req.params.productId
+        const id= req.user_id
+        if (!id || !productId) {
+            return res.status(400).send('operation failed')
+        }
+        const user = await User.findById(id)
+        const product = await Product.findById(productId)
+        if (!user) {
+            return res.status(400).send('user not found')
+        }
+        if (!product)
+        {
+            return res.status(400).json({"msg":"product not found"})
+            }
+        user.products.push(product);
+        await user.save()
+
+        res.status(200).json({
+            status: "success",
+            data: user
+
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error)
+    }
+   
+    
+}
+
+exports.removeProduct = async (req, res) => {
+    try {
+        const productId = req.params.productId
+        const id = req.user_id
+        if (!id || !productId) {
+            return res.status(400).send('operation failed')
+        }
+        const user = await User.findById(id)
+        const product = await Product.findById(productId)
+        if (!user) {
+            return res.status(400).send('user not found')
+        }
+        if (!product) {
+            return res.status(400).json({ "msg": "product not found" })
+        }
+        let productIndex = user.products.indexOf(product);//get  "car" index
+        //remove car from the colors array
+        user.products.splice(productIndex, 1);
+        await user.save()
+
+        res.status(200).json({
+            status: "success",
+            data: user
+
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error)
+    }
+
+
 }
