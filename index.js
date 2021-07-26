@@ -4,6 +4,7 @@ const cors = require("cors");
 const userRoutes = require("./api/Routes/user");
 const authRoutes = require("./api/Routes/auth");
 const productRoutes = require("./api/Routes/product");
+const adminRoutes = require("./api/Routes/admin");
 const cookieParser = require('cookie-parser')
 const fileUpload = require('express-fileupload')
 
@@ -28,6 +29,7 @@ app.use(express.urlencoded());
 app.use("/auth",authRoutes)
 app.use("/user", userRoutes)
 app.use("/product", productRoutes)
+app.use("/admin", adminRoutes)
 
 
 

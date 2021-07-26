@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "backend": "nodemon index.js --ignore frontend",
-    "frontend": "npm start --prefix client --ignore backend",
-    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
+    "server": "nodemon index.js --ignore client",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Mohit garg",
   "license": "ISC",

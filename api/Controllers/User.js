@@ -95,19 +95,21 @@ exports.uploadImage = async(req, res) => {
     if (!user)
     {
         return res.status(400).send('user not found')
-        }
-    file.mv(`/home/mohit/mohit/AjArt/server/client/public/images/${file.name}`, err => {
+    }
+    const type = file.name.split('.')[1]
+    const name = user.name.split(' ')[0]
+    file.mv(`/home/mohit/mohit/AjArt/server/client/public/images/${name}_${user._id}.${type}`, err => {
         if (err) {
             return res.status(500).send(err)
         }
 
-        user.profileImage = `/images/${file.name}`
+        user.profileImage = `/images/${name}_${user._id}.${type}`
         user.save()
 
         res.status(200).json({
             status: "success",
             data: {
-                fileName: file.name, filePath: `/images/${file.name}`
+                fileName: `${ name }_${ user._id }.${ type }`, filePath: `/images/${name}_${user._id}.${type}`
             }
 
         })
@@ -182,7 +184,7 @@ exports.removeProduct = async (req, res) => {
         if (!product) {
             return res.status(400).json({ "msg": "product not found" })
         }
-        let productIndex = user.products.indexOf(product);//get  "car" index
+        let productIndex = user.products.indexOf(productId);//get  "car" index
         //remove car from the colors array
         user.products.splice(productIndex, 1);
         await user.save()
