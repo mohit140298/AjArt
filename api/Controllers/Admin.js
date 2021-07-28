@@ -123,3 +123,28 @@ exports.delete = async (req, res) => {
 
 
 }
+exports.getMyProducts = async (req, res) => {
+    try {
+        const id = req.user_id
+        if (!id ) {
+            return res.status(400).send('operation failed')
+        }
+        const user = await User.findById(id)
+        res.status(200).json({
+            status: "success",
+            results: users.length,
+            data: users
+        })
+
+
+
+    } catch (error) {
+        res.status(404).json({
+            status: "failed",
+            error: error.message
+        })
+    }
+
+
+}
+

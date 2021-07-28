@@ -201,3 +201,125 @@ exports.removeProduct = async (req, res) => {
 
 
 }
+
+exports.getUserWishList = async (req, res) => {
+    try {
+        const user = await User.findById(req.user_id).populate('wishListProducts')
+        if (!user) {
+            return res.status(400).send('user not found')
+        }
+
+        if (user.wishListProducts.length) {
+            res.status(200).json({
+                status: "success",
+                data: user.wishListProducts
+
+            })
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(400).send(err);
+    }
+
+}
+
+exports.addProductToWishlist = async (req, res) => {
+    try {
+        const productId = req.params.productId
+        const id = req.user_id
+        if (!id || !productId) {
+            return res.status(400).send('operation failed')
+        }
+        const user = await User.findById(id)
+        const product = await Product.findById(productId)
+        if (!user) {
+            return res.status(400).send('user not found')
+        }
+        if (!product) {
+            return res.status(400).json({ "msg": "product not found" })
+        }
+        user.wishListProducts.push(product);
+        await user.save()
+
+        res.status(200).json({
+            status: "success",
+            data: user
+
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error)
+    }
+
+
+}
+
+exports.removeProductFromWishlist = async (req, res) => {
+    try {
+        const productId = req.params.productId
+        const id = req.user_id
+        if (!id || !productId) {
+            return res.status(400).send('operation failed')
+        }
+        const user = await User.findById(id)
+        const product = await Product.findById(productId)
+        if (!user) {
+            return res.status(400).send('user not found')
+        }
+        if (!product) {
+            return res.status(400).json({ "msg": "product not found" })
+        }
+        let productIndex = user.wishListProducts.indexOf(productId);//get  "car" index
+        //remove car from the colors array
+        user.wishListProducts.splice(productIndex, 1);
+        await user.save()
+
+        res.status(200).json({
+            status: "success",
+            data: user
+
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error)
+    }
+
+
+}
+
+exports.checkProductInWishList = async (req, res) => {
+    try {
+        const productId = req.params.productId
+        const id = req.user_id
+        if (!id || !productId) {
+            return res.status(400).send('operation failed')
+        }
+        const user = await User.findById(id)
+        const product = await Product.findById(productId)
+        if (!user) {
+            return res.status(404).send('user not found')
+        }
+        if (!product) {
+            return res.status(404).json({ "msg": "product not found" })
+        }
+        let productIndex = user.wishListProducts.indexOf(productId);//get  "car" index
+       
+        //remove car from the colors array
+        if (productIndex !== -1) {
+            res.status(200).json({
+                status: "success",
+                data: user
+
+            })
+        }
+        else
+         res.status(400).send("not found")
+      
+    } catch (error) {
+        console.log(error)
+    }
+
+
+}
+
+
