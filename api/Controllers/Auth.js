@@ -12,7 +12,7 @@ exports.login = async (req, res) => {
                 message: "Please fill all the required fields"
             })
         }
-        const user = await User.findOne({ email })
+        const user = await User.findOne({ email }).populate('role')
 
         if (user) {
             const isMatch = await bcrypt.compare(password, user.password)
@@ -22,7 +22,11 @@ exports.login = async (req, res) => {
                 res.cookie("auth", userTokenData.access_token)
                 res.status(200).json({
                     status: "success",
-                    data: user,
+                    data:
+                    {
+                        user: user,
+                        role: user.role
+                    }
                 });
 
             }

@@ -118,15 +118,15 @@ exports.uploadImage = async(req, res) => {
 
 exports.getUserCartProducts = async (req, res) => {
     try {
-        const user = await User.findById(req.user_id).populate('products')
+        const user = await User.findById(req.user_id).populate('cartProducts')
         if (!user) {
             return res.status(400).send('user not found')
         }
        
-        if (user.products.length) {
+        if (user.cartProducts.length) {
             res.status(200).json({
                 status: "success",
-                data: user.products
+                data: user.cartProducts
 
             })
         }
@@ -137,7 +137,7 @@ exports.getUserCartProducts = async (req, res) => {
     
 }
 
-exports.addProduct = async (req, res) => {
+exports.addProductToCart = async (req, res) => {
     try {
         const productId = req.params.productId
         const id= req.user_id
@@ -153,7 +153,7 @@ exports.addProduct = async (req, res) => {
         {
             return res.status(400).json({"msg":"product not found"})
             }
-        user.products.push(product);
+        user.cartProducts.push(product);
         await user.save()
 
         res.status(200).json({
@@ -169,7 +169,7 @@ exports.addProduct = async (req, res) => {
     
 }
 
-exports.removeProduct = async (req, res) => {
+exports.removeProductFromCart = async (req, res) => {
     try {
         const productId = req.params.productId
         const id = req.user_id
@@ -184,9 +184,9 @@ exports.removeProduct = async (req, res) => {
         if (!product) {
             return res.status(400).json({ "msg": "product not found" })
         }
-        let productIndex = user.products.indexOf(productId);//get  "car" index
+        let productIndex = user.cartProducts.indexOf(productId);//get  "car" index
         //remove car from the colors array
-        user.products.splice(productIndex, 1);
+        user.cartProducts.splice(productIndex, 1);
         await user.save()
 
         res.status(200).json({

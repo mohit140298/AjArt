@@ -16,7 +16,13 @@ const userSchema = new mongoose.Schema({
     profileImage: {
         type:String
     },
-    products: [
+    cartProducts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product',
+        }
+    ],
+    myProducts: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Product',

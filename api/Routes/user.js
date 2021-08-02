@@ -17,10 +17,10 @@ router.get("/checkProductInWishList/:productId", authMiddleware.checkLogin, user
 
 
 
-router.post("/addProduct/:productId", authMiddleware.checkLogin, userController.addProduct)
+router.post("/addProductToCart/:productId", authMiddleware.checkLogin, userController.addProductToCart)
 router.post("/addProductToWishlist/:productId", authMiddleware.checkLogin, userController.addProductToWishlist)
 
-router.delete("/removeProduct/:productId", authMiddleware.checkLogin, userController.removeProduct)
+router.delete("/removeProductFromCart/:productId", authMiddleware.checkLogin, userController.removeProductFromCart)
 router.delete("/removeProductFromWishlist/:productId", authMiddleware.checkLogin, userController.removeProductFromWishlist)
 
 module.exports = router;
