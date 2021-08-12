@@ -28,15 +28,26 @@ exports.getUser = async (req, res) => {
         {
             res.status(400).json({ "message": "user not permitted" })
             }
-        const user = await User.findById(req.user_id).populate('role')
+        const user = await User.findById(req.user_id).populate('role').populate('wishListProducts').populate('cartProducts').populate('myProducts')
         //User.findOne({_id:req.params.id})
         if (!user)
         {
             res.status(400).json({"message":"user not found"})
         }
+        const wishlistProductIds = user.wishListProducts.map(product => {
+            return product._id
+        })
+        
+        
+       
+        
         res.status(200).json({
             status: 'success',
             role: user.role,
+            wishListProductIds: wishlistProductIds,
+            wishListProducts: user.wishListProducts,
+            cartProducts: user.cartProducts,
+            myProducts: user.myProducts,
             data:user
 
         })
@@ -116,26 +127,7 @@ exports.uploadImage = async(req, res) => {
     })
 }
 
-exports.getUserCartProducts = async (req, res) => {
-    try {
-        const user = await User.findById(req.user_id).populate('cartProducts')
-        if (!user) {
-            return res.status(400).send('user not found')
-        }
-       
-        if (user.cartProducts.length) {
-            res.status(200).json({
-                status: "success",
-                data: user.cartProducts
 
-            })
-        }
-    } catch (err) {
-        console.log(err)
-        res.status(400).send(err);
-    }
-    
-}
 
 exports.addProductToCart = async (req, res) => {
     try {
@@ -287,39 +279,6 @@ exports.removeProductFromWishlist = async (req, res) => {
 
 }
 
-exports.checkProductInWishList = async (req, res) => {
-    try {
-        const productId = req.params.productId
-        const id = req.user_id
-        if (!id || !productId) {
-            return res.status(400).send('operation failed')
-        }
-        const user = await User.findById(id)
-        const product = await Product.findById(productId)
-        if (!user) {
-            return res.status(404).send('user not found')
-        }
-        if (!product) {
-            return res.status(404).json({ "msg": "product not found" })
-        }
-        let productIndex = user.wishListProducts.indexOf(productId);//get  "car" index
-       
-        //remove car from the colors array
-        if (productIndex !== -1) {
-            res.status(200).json({
-                status: "success",
-                data: user
 
-            })
-        }
-        else
-         res.status(400).send("not found")
-      
-    } catch (error) {
-        console.log(error)
-    }
-
-
-}
 
 
